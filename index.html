@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WetterApp</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-main">
+
+ 
+
+        <input type="text" id="city-input" placeholder="Stadt" onkeydown="handleEnter(event)">    
+
+
+
+        <div id="weather-output">
+
+
+
+            <div class="city" id="city">Die Wetter-App
+            </div>
+
+
+
+            <div class="temp" id="temp">immer und überall infortmiert!
+            </div>
+
+
+
+            <div class="Min-Max" id="Min-Max">
+            </div>
+
+
+
+            <div class="Angaben" id="Angaben">
+            </div>
+
+
+
+        </div>
+    </div>
+
+
+    <script>
+      function fetchWeather() {
+        const city = document.getElementById('city-input').value;
+        const apiKey = 'bab281d79e5f1e9755a68d754cc313e7'; // API-Schlüssel hier einfügen
+        const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric&lang=de`;
+
+ 
+
+        fetch(apiUrl)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Netzwerkantwort war nicht ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                displayWeather(data);
+            })
+            .catch(error => console.error('Fehler:', error));
+    }
+
+ 
+
+    function displayWeather(data) {
+        const weatherOutput = document.getElementById('weather-output');
+
+ 
+
+        if (data && data.weather && data.main) {
+ 
+            weatherOutput.innerHTML = `
+                <h2 class="city" >Wetter in ${data.name}</h2>
+                <p class="temp" >Temperatur: ${data.main.temp} °C</p>
+                <p class="Min-Max" >Min: ${data.main.temp_min} °C / Max: ${data.main.temp_max} °C</p>
+                <p class="Angaben" >Beschreibung: ${data.weather[0].description}</p>
+                 <h2>Wetter in ${data.name}</h2>
+                   
+                    <p>Temperatur: ${data.main.temp} °C</p>
+                   
+                    <p> Minimale Temperatur: ${data.main.temp_min} °C</p>
+                
+                   <p>Maximale Temperatur: ${data.main.temp_max} °C</p>
+
+                    <p>Beschreibung: ${data.weather[0].description}</p>
+
+                    <p>Windstärke: ${data.wind.speed} m/s </p>
+
+                    <p>Luftdruck: ${data.main.pressure} hPa </p>
+
+                    <p>Feuchtigkeit: ${data.main.humidity} % </p>
+
+                    <p>Sonnenaufgang: ${sunrise} </p>
+
+                 <p>Sonnenuntergang: ${sunset}</p>
+                 
+                 <p>Beschreibung: ${data.weather[0].description}</p>
+            `;
+
+ 
+
+        } else {
+            weatherOutput.innerHTML = `<p>Stadt nicht gefunden.</p>`;
+        }
+    }
+ function handleEnter(event) {
+    // Prüfen, ob die Enter-Taste (Keycode 13) gedrückt wurde
+        if (event.key === 'Enter') {
+            fetchWeather();
+        }
+    }
+
+    </script>
+
+</body>
+</html>
